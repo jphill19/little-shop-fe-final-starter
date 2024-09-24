@@ -235,28 +235,124 @@ function displayMerchantItems(event) {
 function getMerchantCoupons(event) {
   let merchantId = event.target.closest("article").id.split('-')[1]
   console.log("Merchant ID:", merchantId)
-
+  couponsView.innerHTML = ``
   fetchData(`merchants/${merchantId}`)
   .then(couponData => {
     console.log("Coupon data from fetch:", couponData)
-    displayMerchantCoupons(couponData);
+    displayMerchantCouponsStats(couponData);
+  })
+  fetchData(`merchants/${merchantId}/coupons`)
+  .then(couponData => {
+    console.log("Coupon data from fetch:", couponData)
+    displayMerchanCoupons(couponData);
   })
 }
 
-function displayMerchantCoupons(coupons) {
+function displayMerchantCouponsStats(coupons) {
   show([couponsView])
   hide([merchantsView, itemsView])
+  
+  // console.log(coupons)
 
-  couponsView.innerHTML = `
-    <p>Coupon data will go here.</p>
-  `
+  couponsView.insertAdjacentHTML(
+    "afterbegin", 
+    `<div class="metrics-container">
+  <div class="metric">
+    <div class="circle">
+      <span class="count" id="couponsCount">${coupons.data.attributes.coupons_count}</span>
+    </div>
+    <p>Coupons Count</p>
+  </div>
+  <div class="metric">
+    <div class="circle">
+      <span class="count" id="invoiceCouponCount">${coupons.data.attributes.invoice_coupon_count}</span>
+    </div>
+    <p>Invoice Coupon Count</p>
+  </div>
+</div>`
+  )
+  
 }
+
+function displayMerchanCoupons(coupons){
+  console.log ("coupons: ", coupons.data)
+  if (coupons.data.length == 0 ){
+    return
+  }
+  
+  const activeCoupons = coupons.data.filter(coupon => coupon.attributes.active == true)
+  const deactivatedCoupons = coupons.data.filter(coupon => coupon.attributes.active == false)
+
+  console.log("active: ", activeCoupons )
+  console.log("deactive: ", deactivatedCoupons)
+
+  console.log(!activeCoupons.length == 0)
+
+  let activeCouponsHTML = ``
+  let inactiveCouponsHTML = ``
+  let activeHeader = ``
+  let inactiveHeader = ``
+
+  if (!activeCoupons.length == 0){
+    activeHeader += `<h3> Active Coupons:</h3>`
+    activeCouponsHTML += generateCouponHTML(activeCoupons)
+  }
+  if (!deactivatedCoupons.length == 0){
+    inactiveHeader += `<h3> Inactive Coupons:</h3>`
+    inactiveCouponsHTML += generateCouponHTML(deactivatedCoupons)
+  }
+  console.log(activeCouponsHTML)
+  console.log(inactiveCouponsHTML)
+  couponsView.insertAdjacentHTML(
+    "beforeend",
+    `
+    ${activeHeader}
+    <div class="coupon-container">
+      ${activeCouponsHTML}
+    </div>
+    ${inactiveHeader}
+    <div class= "coupon-container">
+      ${inactiveCouponsHTML}
+    </div>`
+
+  )
+}
+
 
 //Helper Functions
 function show(elements) {
   elements.forEach(element => {
     element.classList.remove('hidden')
   })
+}
+
+function generateCouponHTML(coupons) {
+  let couponHTMLString = '';
+
+  coupons.forEach(coupon => {
+      let discountDisplay = '';
+      
+      if (coupon.attributes.percentage) {
+
+          discountDisplay = `<strong class="percentage-discount ">${coupon.attributes.discount}% off:</strong> `;
+      } else {
+
+          discountDisplay = `<strong class=flat-discount>$${coupon.attributes.discount} off </strong>`
+          ;
+      }
+
+      const html = `
+        <div class="coupon">
+          <h3>Code: <em>${coupon.attributes.code}</em></h3>
+          <p class="discount">${discountDisplay}</p>
+          <p class="expiration">Expires on: ${coupon.attributes.expiration_date}</p>
+        </div>
+      `;
+
+      couponHTMLString += html;
+  });
+
+  return couponHTMLString;
 }
 
 function hide(elements) {
