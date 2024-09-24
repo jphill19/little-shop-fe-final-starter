@@ -334,10 +334,11 @@ function generateCouponHTML(coupons) {
       
       if (coupon.attributes.percentage) {
 
-          discountDisplay = `${coupon.attributes.discount}% off`;
+          discountDisplay = `<strong class="percentage-discount ">${coupon.attributes.discount}% off:</strong> `;
       } else {
 
-          discountDisplay = `$${coupon.attributes.discount} off`;
+          discountDisplay = `<strong class=flat-discount>$${coupon.attributes.discount} off </strong>`
+          ;
       }
 
       const html = `

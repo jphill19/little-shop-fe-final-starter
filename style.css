@@ -303,3 +303,11 @@ h3 {
   font-size: 1.3rem;
   font-weight: 600;
 }
+
+.percentage-discount{
+  color: var(--blue);
+}
+
+.flat-discount {
+  color: var(--dk-green);
+}
