@@ -236,6 +236,7 @@ function getMerchantCoupons(event) {
   let merchantId = event.target.closest("article").id.split('-')[1]
   console.log("Merchant ID:", merchantId)
   couponsView.innerHTML = ``
+  showingText.innerText = `All Coupons for Merchant #${merchantId}`
   fetchData(`merchants/${merchantId}`)
   .then(couponData => {
     console.log("Coupon data from fetch:", couponData)
@@ -250,7 +251,7 @@ function getMerchantCoupons(event) {
 
 function displayMerchantCouponsStats(coupons) {
   show([couponsView])
-  hide([merchantsView, itemsView])
+  hide([merchantsView, itemsView, addNewButton])
   
   // console.log(coupons)
 
