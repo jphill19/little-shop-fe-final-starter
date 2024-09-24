@@ -11,6 +11,7 @@ const itemsNavButton = document.querySelector("#items-nav")
 const addNewButton = document.querySelector("#add-new-button")
 const showingText = document.querySelector("#showing-text")
 
+
 //Form elements
 const merchantForm = document.querySelector("#new-merchant-form")
 const newMerchantName = document.querySelector("#new-merchant-name")
@@ -33,9 +34,16 @@ submitMerchantButton.addEventListener('click', (event) => {
   submitMerchant(event)
 })
 
+couponsView.addEventListener('click', function(event) {
+  if (event.target.classList.contains('filter-btn')) {
+    filterCoupons(event);
+  }
+});
+
 //Global variables
 let merchants;
 let items;
+let filterButtons;
 
 //Page load data fetching
 Promise.all([fetchData('merchants'), fetchData('items')])
@@ -284,38 +292,35 @@ function displayMerchanCoupons(coupons){
   const activeCoupons = coupons.data.filter(coupon => coupon.attributes.active == true)
   const deactivatedCoupons = coupons.data.filter(coupon => coupon.attributes.active == false)
 
-  console.log("active: ", activeCoupons )
-  console.log("deactive: ", deactivatedCoupons)
-
-  console.log(!activeCoupons.length == 0)
-
-  let activeCouponsHTML = ``
-  let inactiveCouponsHTML = ``
-  let activeHeader = ``
-  let inactiveHeader = ``
-
+  let activeCouponsHTML = ``;
+  let inactiveCouponsHTML = ``;
+  let activeHeader = ``;
+  let inactiveHeader = ``;
+  let dropDownFilter = ``;
   if (!activeCoupons.length == 0){
-    activeHeader += `<h3> Active Coupons:</h3>`
+    activeHeader += `<h3 class= "active-header"> Active Coupons:</h3>`
     activeCouponsHTML += generateCouponHTML(activeCoupons)
   }
   if (!deactivatedCoupons.length == 0){
-    inactiveHeader += `<h3> Inactive Coupons:</h3>`
+    inactiveHeader += `<h3 class="inactive-header"> Inactive Coupons:</h3>`
     inactiveCouponsHTML += generateCouponHTML(deactivatedCoupons)
   }
-  console.log(activeCouponsHTML)
-  console.log(inactiveCouponsHTML)
+
+  if (!activeCouponsHTML.length == 0 && !inactiveCouponsHTML.length == 0){
+    dropDownFilter = generateCouponFilter()
+  }
   couponsView.insertAdjacentHTML(
     "beforeend",
     `
+    ${dropDownFilter}
     ${activeHeader}
-    <div class="coupon-container">
+    <div class="coupon-container active">
       ${activeCouponsHTML}
     </div>
     ${inactiveHeader}
-    <div class= "coupon-container">
+    <div class= "coupon-container inactive">
       ${inactiveCouponsHTML}
     </div>`
-
   )
 }
 
@@ -325,6 +330,29 @@ function show(elements) {
   elements.forEach(element => {
     element.classList.remove('hidden')
   })
+}
+
+function filterCoupons(event){
+    const filter = event.target.getAttribute('data-filter');
+    const couponsContainer = document.querySelectorAll('.coupon-container');
+    const activeHeader = document.querySelector('.active-header');
+    const inactiveHeader = document.querySelector('.inactive-header');
+    couponsContainer.forEach(container => {
+      if (filter === 'all') {
+        container.style.display = 'flex';
+        activeHeader.style.display = 'block';
+        inactiveHeader.style.display = 'block';
+      } else if (filter === 'active' && container.classList.contains('active')) {
+        container.style.display = 'flex';
+      } else if (filter === 'inactive' && container.classList.contains('inactive')) {
+        console.log("test")
+        container.style.display = 'flex';
+      } else {
+        container.style.display = 'none';
+        activeHeader.style.display = 'none';
+        inactiveHeader.style.display = 'none';
+      }
+  });
 }
 
 function generateCouponHTML(coupons) {
@@ -354,6 +382,19 @@ function generateCouponHTML(coupons) {
   });
 
   return couponHTMLString;
+}
+
+function generateCouponFilter(){
+  const filter_button = `
+    <div class="dropdown">
+      <button class="dropbtn">Filter</button>
+      <div class="dropdown-content">
+        <button class="filter-btn" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="inactive">Inactive</button>
+      </div>
+    </div>`
+  return filter_button
 }
 
 function hide(elements) {
