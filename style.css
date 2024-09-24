@@ -209,3 +209,97 @@ h3 {
 .hidden {
   display: none;
 }
+
+/* ******COUPONS TAB******* */
+
+/* COUPON METRICS */
+.coupons-view{
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.metrics-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--blue);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.metric:hover {
+  transform: scale(1.1); 
+}
+
+.circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.count {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: var(--blue);
+}
+
+.metric p {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* COUPON CARDS */
+
+.coupon-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.coupon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 1rem;
+  border: 5px dotted #bbb;
+  border-radius: 15px;
+  padding: 0.5rem;
+  transition: transform 0.3s ease;
+  background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
+  color: var(--charcoal);
+}
+
+.coupon:hover{
+  transform: scale(1.1); 
+  box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.coupon .expiration{
+  color: var(--red);
+  font-weight: 900;
+}
+
+.coupon .discount{
+  font-size: 1.3rem;
+  font-weight: 600;
+}
